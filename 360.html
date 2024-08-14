@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decodificador de Base64 y Localizador para la obtencion de imagenes 360</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+            background-color: indigo;
+            color:white;
+        }
+
+        textarea {
+            width: 80%;
+            height: 130px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .info {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Herramienta de decifrador de Base64 y Localizacion para la obtencion de imagenes 360</h2>
+    
+    <label for="base64Input">Texto en Base64:</label><br>
+    <textarea id="base64Input" rows="4" cols="50"></textarea><br><br>
+    
+    <button onclick="decodeBase64()">Decodificar</button><br><br>
+    
+    <label for="decodedText">Texto Decodificado:</label><br>
+    <textarea id="decodedText" rows="4" cols="50" readonly></textarea><br><br>
+    
+    <button onclick="processJSON()">Procesar JSON</button><br><br>
+    
+    <p id="message"></p>
+    <pre id="info"></pre>
+
+    <script>
+        function decodeBase64() {
+            // Obtener el texto en Base64
+            const base64Text = document.getElementById('base64Input').value;
+            
+            // Decodificar el texto
+            const decodedText = atob(base64Text);
+            
+            // Rellenar el segundo cuadro de texto con el texto decodificado
+            document.getElementById('decodedText').value = decodedText;
+        }
+
+        function downloadImage(url) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'imagen.jpg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function processJSON() {
+            const jsonText = document.getElementById('decodedText').value;
+            const messageElement = document.getElementById('message');
+            const infoElement = document.getElementById('info');
+            messageElement.textContent = '';
+            infoElement.textContent = '';
+
+            let jsonObject;
+            try {
+                jsonObject = JSON.parse(jsonText);
+            } catch (e) {
+                messageElement.textContent = 'El codigo JSON es inválido o está malescrito.';
+                return;
+            }
+
+            const imageUrl = jsonObject.data?.works[0]?.urls?.origin_image;
+            if (imageUrl) {
+                downloadImage(imageUrl);
+                messageElement.textContent = 'Descarga en proceso...';
+            } else {
+                messageElement.textContent = 'No se encontró la URL de la imagen del texto decifrado.';
+            }
+        }
+    </script>
+    <p style="color: gray;">Pagina realizado para la facilitacion de descargas de imagenes 360 de una <a style="color: aqua;" href="https://www.insta360.com/es/">pagina determinada</a>, solo para beneficio del usuario de que lo este usando.</p>
+    <p style="color: gray;">Este sitio no va a realizar ninguna descarga hacia algun sitio no autorizado que no sea de el propocito del proyecto.</p>
+    <p>Para agradecer <a href="https://paypal.me/maxiruggeri" style="color: aqua;">PayPal</a></p>
+</body>
+</html>
